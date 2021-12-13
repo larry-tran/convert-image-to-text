@@ -8,7 +8,7 @@ const {
 router.post("/upload", uploadImage, uploadImageController.uploadImage);
 
 router.get("/upload", (req, res) => {
-  console.log("hihi");
+  res.status(200).json("testing api");
 });
 
 module.exports = router;

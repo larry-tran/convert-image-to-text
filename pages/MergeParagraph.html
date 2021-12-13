@@ -5,7 +5,7 @@
   <meta charset="UTF-8">
   <!-- <meta http-equiv="X-UA-Compatible" content="IE=edge"> -->
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Tool cua Ai Lien</title>
+  <title>Merge Paragraph cua Ai Lien</title>
   <style>
     .container {
       display: flex;
@@ -73,9 +73,9 @@
     txtLeft1.addEventListener('copy', (event) => {
       const selection = document.getSelection();
       var mergePararaph = handleBreak(selection.toString())
-        previousData.push(txtRight.value)
-        txtRight.value += mergePararaph
-        txtRight.value += "\n"
+      previousData.push(txtRight.value)
+      txtRight.value += mergePararaph
+      txtRight.value += "\n"
     })
 
     function handleBreak(data) {
@@ -89,8 +89,8 @@
       txtRight.value = ""
     }
 
-    function handleBack(){
-      txtRight.value = previousData[previousData.length-2]
+    function handleBack() {
+      txtRight.value = previousData[previousData.length - 2]
       previousData.pop()
     }
 

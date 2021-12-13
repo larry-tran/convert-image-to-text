@@ -9,7 +9,7 @@ const uploadImage = async (req, res) => {
     await tesseract
       .recognize(file.tempFilePath, language, { logger: (e) => console.log(e) })
       .then((out) => {
-        console.log(out.data.hocr);
+        console.log(out.data.text);
         removeTmp(file.tempFilePath);
         return res.status(200).json({ msg: "Success", content: out.data.text });
       });

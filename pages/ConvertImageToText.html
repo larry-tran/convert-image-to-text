@@ -1,0 +1,112 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <!-- <meta http-equiv="X-UA-Compatible" content="IE=edge"> -->
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Tool cua Ai Lien</title>
+  <style>
+    #spinner {
+      visibility: hidden;
+      width: 80px;
+      height: 80px;
+
+      border: 2px solid #f3f3f3;
+      border-top: 3px solid #f25a41;
+      border-radius: 100%;
+
+      position: absolute;
+      top: 0;
+      bottom: 0;
+      left: 0;
+      right: 0;
+      margin: auto;
+
+      animation: spin 1s infinite linear;
+    }
+
+    @keyframes spin {
+      from {
+        transform: rotate(0deg);
+      }
+
+      to {
+        transform: rotate(360deg);
+      }
+    }
+
+    #spinner.show {
+      visibility: visible;
+    }
+
+    textarea {
+      width: 100%;
+      height: 95vh;
+    }
+  </style>
+</head>
+
+<body>
+  <form action="./index.html" method="post" enctype="multipart/form-data">
+    <input type="file" name="myFile" id="myFile" required>
+    <label for="cars">Choose language:</label>
+    <select name="language" id="language">
+      <option value="vie">Vietnamese</option>
+      <option value="eng">English</option>
+    </select>
+    <button type="submit" onclick="convertToText()">Upload</button>
+  </form>
+  <textarea id="myTextarea"></textarea>
+  <div id="spinner"></div>
+  <!-- <img alt="view" id="view"> -->
+  <script>
+    window.addEventListener("paste", e => {
+      if (e.clipboardData.files.length > 0) {
+        const fileInput = document.querySelector("#myFile");
+        fileInput.files = e.clipboardData.files;
+      }
+      // if (e.clipboardData.files[0].type.startsWith("image/")) {
+      //     setPreviewImage(e.clipboardData.files[0])
+      // }
+    })
+
+    // function setPreviewImage(file) {
+    //     const fileReader = new FileReader();
+    //     fileReader.readAsDataURL(file);
+    //     fileReader.onload = () => {
+    //         document.querySelector("#view").src = fileReader.result
+    //     }
+    // }
+
+    function convertToText() {
+      if (document.querySelector("#myFile").files.length !== 0) {
+        var languageCombobox = document.getElementById("language").value || "vie";
+        const spinner = document.getElementById("spinner");
+        const url = "https://convert-image-to-text.herokuapp.com/api/upload"
+        const form = document.querySelector('form')
+
+        spinner.classList.add('show');
+        form.addEventListener('submit', e => {
+          e.preventDefault();
+          const files = document.querySelector('[name=myFile]').files;
+          const formData = new FormData();
+          formData.append('file', files[0]);
+          formData.append('language', languageCombobox);
+          const xhr = new XMLHttpRequest();
+          xhr.responseType = 'json';
+          xhr.onload = () => {
+            console.log(xhr.response.content);
+            document.getElementById("myTextarea").value = xhr.response.content;
+            spinner.classList.remove('show');
+          }
+
+          xhr.open('POST', url);
+          xhr.send(formData);
+        })
+      }
+    }
+  </script>
+</body>
+
+</html>

@@ -2,6 +2,7 @@ const cors = require("cors");
 const fileUpload = require("express-fileupload");
 const express = require("express");
 const uploadRoute = require("./routes/uploadRoute");
+const toolRoute = require("./routes/toolRoute");
 
 const dotenv = require("dotenv");
 dotenv.config();
@@ -20,6 +21,6 @@ app.use(express.json());
 app.use(fileUpload({ useTempFiles: true }));
 
 app.use("/api", uploadRoute);
+app.use("/tool", toolRoute);
 
 app.listen(PORT, () => console.log(`Server is ready at ${PORT}`));
-

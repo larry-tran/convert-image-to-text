@@ -1,0 +1,102 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <!-- <meta http-equiv="X-UA-Compatible" content="IE=edge"> -->
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Tool cua Ai Lien</title>
+  <style>
+    .container {
+      display: flex;
+    }
+
+    .left {
+      width: 50%;
+      padding: 10px;
+    }
+
+    .right {
+      width: 50%;
+      padding: 10px;
+    }
+
+    .txtLeft {
+      width: 100%;
+      height: 88vh;
+    }
+
+    .txtRight {
+      width: 100%;
+      height: 90vh;
+    }
+
+    .header {
+      text-align: center;
+    }
+  </style>
+</head>
+
+<body>
+  <div class="header">
+    <p>Cái này dùng để gộp dòng. Nhấn Refresh để xóa ô bên phải. Nhấn Back nếu lỡ copy sai</p>
+    <button onclick="refreshRight()">Refresh</button>
+    <button onclick="handleBack()">Back</button>
+  </div>
+
+  <div class="container">
+    <div class="left">
+      <textarea name="txtLeft1" id="txtLeft1" class="txtLeft"></textarea>
+      <!-- <textarea name="txtLeft2" id="txtLeft2" class="txtLeft"></textarea> -->
+
+    </div>
+    <div class="right"> <textarea name="txtRight" id="txtRight" class="txtRight"></textarea></div>
+  </div>
+
+  <script>
+    const txtRight = document.getElementById("txtRight");
+    const txtLeft1 = document.getElementById("txtLeft1");
+    // const txtLeft2 = document.getElementById("txtLeft2");
+
+    // function handleOnchange(item) {
+    //   item.onchange = () => {
+    //     var mergePararaph = handleBreak(item.value)
+    //     txtRight.value += mergePararaph
+    //     txtRight.value += "\n"
+    //   }
+    // }
+
+    // handleOnchange(txtLeft2)
+
+    var previousData = new Array(0)
+
+    txtLeft1.addEventListener('copy', (event) => {
+      const selection = document.getSelection();
+      var mergePararaph = handleBreak(selection.toString())
+        previousData.push(txtRight.value)
+        txtRight.value += mergePararaph
+        txtRight.value += "\n"
+    })
+
+    function handleBreak(data) {
+      var lines = data.split("\n");
+      var merge = ""
+      lines.map(line => (merge === "") ? merge = line : merge = merge + " " + line)
+      return merge
+    }
+
+    function refreshRight() {
+      txtRight.value = ""
+    }
+
+    function handleBack(){
+      txtRight.value = previousData[previousData.length-2]
+      previousData.pop()
+    }
+
+  </script>
+
+
+</body>
+
+</html>

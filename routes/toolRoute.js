@@ -6,4 +6,8 @@ router.get("/imagetotext", (req, res) => {
   res.sendFile(path.join(appDir,"pages/ConvertImageToText.html"));
 });
 
+router.get("/mergeparapaph", (req, res) => {
+  res.sendFile(path.join(appDir,"pages/mergepararaph.html"));
+});
+
 module.exports = router;

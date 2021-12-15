@@ -40,70 +40,135 @@
       visibility: visible;
     }
 
-    textarea {
+    .container {
+      display: flex;
+    }
+
+    .left {
+      width: 50%;
+      padding: 10px;
+    }
+
+    .right {
+      width: 50%;
+      padding: 10px;
+    }
+
+    .txtLeft {
       width: 100%;
-      height: 95vh;
+      height: 80vh;
+    }
+
+    .txtRight {
+      width: 100%;
+      height: 80vh;
+    }
+
+    .header {
+      text-align: center;
     }
   </style>
 </head>
 
 <body>
-  <form action="./index.html" method="post" enctype="multipart/form-data">
-    <input type="file" name="myFile" id="myFile" required>
-    <label for="cars">Choose language:</label>
-    <select name="language" id="language">
-      <option value="vie">Vietnamese</option>
-      <option value="eng">English</option>
-    </select>
-    <button type="submit" onclick="convertToText()">Upload</button>
-  </form>
-  <textarea id="myTextarea"></textarea>
+  <input type="file" name="myFile" id="myFile" required>
+  <button type="submit" onclick="convertToText()">Upload</button>
+  <div class="header">
+    <p>Nhấn Ctrl+C để gộp, text đã gộp sẽ hiện bên phải. Nhấn Refresh để xóa ô bên phải. Nhấn
+      Back nếu lỡ copy sai</p>
+    <button onclick="refreshRight()">Refresh</button>
+    <button onclick="handleBack()">Back</button>
+  </div>
+  <div class="container">
+    <div class="left">
+      <textarea name="txtLeft1" id="txtLeft1" class="txtLeft"></textarea>
+    </div>
+    <div class="right"> <textarea name="txtRight" id="txtRight" class="txtRight"></textarea></div>
+  </div>
   <div id="spinner"></div>
-  <!-- <img alt="view" id="view"> -->
+
   <script>
+    const txtRight = document.getElementById("txtRight");
+    const txtLeft1 = document.getElementById("txtLeft1");
+
+    // const textarea = document.getElementById('txtLeft1')
+    const spinner = document.getElementById("spinner");
+
+    var samesend = 0
+
     window.addEventListener("paste", e => {
       if (e.clipboardData.files.length > 0) {
         const fileInput = document.querySelector("#myFile");
         fileInput.files = e.clipboardData.files;
       }
-      // if (e.clipboardData.files[0].type.startsWith("image/")) {
-      //     setPreviewImage(e.clipboardData.files[0])
-      // }
     })
-
-    // function setPreviewImage(file) {
-    //     const fileReader = new FileReader();
-    //     fileReader.readAsDataURL(file);
-    //     fileReader.onload = () => {
-    //         document.querySelector("#view").src = fileReader.result
-    //     }
-    // }
 
     function convertToText() {
       if (document.querySelector("#myFile").files.length !== 0) {
-        var languageCombobox = document.getElementById("language").value || "vie";
-        const spinner = document.getElementById("spinner");
-        const url = "https://convert-image-to-text.herokuapp.com/api/upload"
-        const form = document.querySelector('form')
+        const files = document.querySelector('[name=myFile]').files;
+        const url = "https://blackboxapp.co/getsingleimage"
+        const userId = "61b74990df9c2e002f1b9498"
 
-        spinner.classList.add('show');
-        form.addEventListener('submit', e => {
-          e.preventDefault();
-          const files = document.querySelector('[name=myFile]').files;
-          const formData = new FormData();
-          formData.append('file', files[0]);
-          formData.append('language', languageCombobox);
-          const xhr = new XMLHttpRequest();
-          xhr.responseType = 'json';
-          xhr.onload = () => {
-            console.log(xhr.response.content);
-            document.getElementById("myTextarea").value = xhr.response.content;
+        var blob = files[0].slice(0, files[0].size, 'image/jpg');
+        var newFile = new File([blob], userId + '.jpg', {
+          type: 'image/jpg'
+        })
+        // console.log(newFile)
+
+        var formdata = new FormData();
+        formdata.append("photo", newFile);
+        var requestOptions = {
+          method: 'POST',
+          body: formdata
+        };
+
+        getData(url, requestOptions)
+
+      }
+    }
+
+    function getData(url, requestOptions) {
+      spinner.classList.add('show');
+      fetch(url, requestOptions)
+        .then(response => response.json())
+        .then(data => {
+          if (data.length <= 7 && samesend < 10) {
+            samesend += 1;
+            getData(url, requestOptions)
+          }
+          else {
+            txtLeft1.value = data.text
             spinner.classList.remove('show');
           }
-
-          xhr.open('POST', url);
-          xhr.send(formData);
         })
+        .catch(error => console.log('error', error));
+    }
+
+    var previousData = new Array(0)
+
+    txtLeft1.addEventListener('copy', (event) => {
+      const selection = document.getSelection();
+      var mergePararaph = handleBreak(selection.toString())
+      previousData.push(txtRight.value)
+      txtRight.value += mergePararaph
+      txtRight.value += "\n"
+    })
+
+    function handleBreak(data) {
+      var lines = data.split("\n");
+      var merge = ""
+      lines.map(line => (merge === "") ? merge = line : merge = merge + " " + line)
+      return merge
+    }
+
+    function refreshRight() {
+      txtRight.value = ""
+    }
+
+    function handleBack() {
+      if (previousData.length > 0) {
+        txtRight.value = previousData[previousData.length - 1]
+        previousData.pop()
       }
     }
   </script>

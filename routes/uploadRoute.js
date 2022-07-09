@@ -1,5 +1,6 @@
 const router = require("express").Router();
 const fs = require("fs");
+const tesseract = require("tesseract.js");
 const upload = require("../middlewares/upload");
 const {
   uploadImageController,
@@ -19,7 +20,14 @@ router.post(
 );
 
 router.get("/upload", (req, res) => {
-  res.status(200).json("testing api");
+  tesseract
+    .recognize("./uploads/61b97df64e3280002f16a33c.jpg", "vie", {
+      logger: (m) => console.log(m),
+    })
+    .then(({ data: { text } }) => {
+      console.log(text);
+      res.status(200).json(`testing api ${text}`);
+    });
 });
 
 module.exports = router;

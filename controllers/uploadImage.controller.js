@@ -1,6 +1,7 @@
 const fs = require("fs");
 const axios = require("axios");
 const FormData = require("form-data");
+const tesseract = require("tesseract.js");
 
 const uploadImage = async (req, res) => {
   try {
@@ -24,6 +25,17 @@ const uploadImage = async (req, res) => {
   }
 };
 
+const uploadImageByTesseract = async (req, res) => {
+  try {
+    const file = req.file;
+    const { data: { text } } = await tesseract
+    .recognize(file.path, "vie")
+    return res.status(200).json({ text })
+  } catch (error) {
+    return res.status(500).json({ msg: error.message });
+  }
+};
+
 const removeTmp = (path) => {
   fs.unlink(path, (err) => {
     if (err) throw err;
@@ -32,4 +44,5 @@ const removeTmp = (path) => {
 
 exports.uploadImageController = {
   uploadImage,
+  uploadImageByTesseract
 };

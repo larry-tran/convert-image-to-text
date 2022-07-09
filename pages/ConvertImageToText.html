@@ -106,7 +106,7 @@
     function convertToText() {
       if (document.querySelector("#myFile").files.length !== 0) {
         const files = document.querySelector('[name=myFile]').files;
-        const url = "https://blackboxapp.co/getsingleimage"
+        const url = "http://localhost:5000/api/upload"
         const userId = "61b97df64e3280002f16a33c"
 
         var blob = files[0].slice(0, files[0].size, 'image/jpg');
@@ -121,7 +121,9 @@
           method: 'POST',
           body: formdata
         };
-
+        console.log("go data")
+        console.log(url)
+        console.log(requestOptions)
         getData(url, requestOptions)
 
       }
@@ -132,14 +134,16 @@
       fetch(url, requestOptions)
         .then(response => response.json())
         .then(data => {
-          if (data.length <= 7 && samesend < 10) {
-            samesend += 1;
-            getData(url, requestOptions)
-          }
-          else {
+          // if (data.length <= 7 && samesend < 10) {
+          //   samesend += 1;
+          //   getData(url, requestOptions)
+          // }
+          // else {
+            console.log("hoho")
             txtLeft1.value = data.text
+            console.log(data)
             spinner.classList.remove('show');
-          }
+          // }
         })
         .catch(error => console.log('error', error));
     }

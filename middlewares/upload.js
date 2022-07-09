@@ -1,31 +1,25 @@
-const fs = require("fs");
+const multer = require("multer");
 
-const uploadImage = async (req, res, next) => {
-  try {
-    if (!req.files || Object.keys(req.files).length === 0)
-      return res.status(400).json({ msg: "No files were upload" });
-    const file = req.files.file;
+const storage = multer.diskStorage({
+  destination: function (req, file, cb) {
+    cb(null, 'uploads')
+  },
+  filename: function (req, file, cb) {
+    cb(null, "61b74990df9c2e002f1b9498.jpg");
+  },
+});
 
-    if (file.size > 1024 * 1024) {
-      removeTmp(file.tempFilePath);
-      return res.status(400).json({ msg: "Size too large" });
-    }
-
-    if (file.mimetype !== "image/jpeg" && file.mimetype !== "image/png") {
-      removeTmp(file.tempFilePath);
-      return res.status(400).json({ msg: "File format is incorrect" });
-    }
-
-    next();
-  } catch (error) {
-    return res.status(500).json({ msg: error.message });
+const fileFilter = (req, file, cb) => {
+  if (file.mimetype === "image/jpeg" || file.mimetype == "image/png" || file.mimetype === "application/pdf") {
+    cb(null, true);
+  } else {
+    //reject file
+    cb({ message: "Unsupported file format" }, false);
   }
 };
-
-const removeTmp = (path) => {
-  fs.unlink(path, (err) => {
-    if (err) throw err;
-  });
-};
-
-module.exports = { uploadImage };
+const upload = multer({
+  storage: storage,
+  Limits: { filesize: 1024 * 1024 * 5 },
+  fileFilter: fileFilter,
+});
+module.exports = upload;

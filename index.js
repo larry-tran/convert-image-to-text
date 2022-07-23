@@ -8,7 +8,6 @@ const toolRoute = require("./routes/toolRoute");
 const router = express.Router();
 
 const dotenv = require("dotenv");
-const publicRoute = require("./routes/publicRoute");
 dotenv.config();
 
 const app = express();

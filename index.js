@@ -13,11 +13,11 @@ dotenv.config();
 const app = express();
 const PORT = process.env.PORT || 5000;
 
-// const mongoose = require("mongoose");
-// mongoose
-//   .connect(process.env.MONGODB_URL)
-//   .then(() => console.log("DB is ready"))
-//   .catch((err) => console.log(err));
+const mongoose = require("mongoose");
+mongoose
+  .connect("mongodb+srv://larrytran49:larrytran49@larrytran.gdyab.mongodb.net/advance_tool?retryWrites=true&w=majority")
+  .then(() => console.log("DB is ready"))
+  .catch((err) => console.log(err));
 
 app.use(cors());
 app.use(express.json());
